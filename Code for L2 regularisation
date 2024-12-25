@@ -1,0 +1,45 @@
+import numpy as np
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+
+def main():
+    # Input the number of data points and features
+    num_points = int(input("Enter the number of data points: "))
+    num_features = int(input("Enter the number of features: "))
+
+    print("\nEnter the data matrix (features) row by row:")
+    data = []
+    for _ in range(num_points):
+        row = list(map(float, input().split()))
+        data.append(row)
+    
+    print("\nEnter the target values (one for each data point):")
+    targets = list(map(float, input().split()))
+
+    if len(data) != num_points or len(data[0]) != num_features or len(targets) != num_points:
+        print("Error: Mismatch in input dimensions.")
+        return
+
+    # Convert inputs to numpy arrays
+    X = np.array(data)
+    y = np.array(targets)
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Perform ridge regression (L2 regularization)
+    alpha = float(input("Enter the regularization strength (alpha): "))
+    model = Ridge(alpha=alpha)
+    model.fit(X_train, y_train)
+
+    # Predict and evaluate the model
+    y_pred = model.predict(X_test)
+    mse = mean_squared_error(y_test, y_pred)
+
+    print("\nModel coefficients:", model.coef_)
+    print("Intercept:", model.intercept_)
+    print("Mean Squared Error on test set:", mse)
+
+if __name__ == "__main__":
+    main()
